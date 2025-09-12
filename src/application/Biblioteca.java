@@ -4,6 +4,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
+import entities.DVD;
 import entities.Emprestimo;
 import entities.ItemDoAcervo;
 import entities.Livro;
@@ -12,7 +13,7 @@ import entities.StatusLivro;
 import entities.Usuario;
 
 import java.time.LocalDate;
-
+//Não acontece nada. Não faz semtido , ele é sempre algo específico .Nesse caso eessa classe deveria ser abstrata, para que não pudesse ser instanciada  .//
 
 public class Biblioteca{
 
@@ -120,7 +121,7 @@ public class Biblioteca{
             System.out.println("Erro: esse emprestimo não existe.");
             return;
         }
-        LocalDate hoje = LocalDate.now();
+        LocalDate hoje = LocalDate.now().plusDays(8);
         long dias = ChronoUnit.DAYS.between(emprestimo.getDataDevolucaoPrevista(), hoje);
 
         if(dias > 0) {
@@ -129,9 +130,25 @@ public class Biblioteca{
         } else {
             System.out.println("Item devolvido.");
         }
-        emprestimo.getItem()    .setStatus(StatusLivro.DISPONIVEL);
+        emprestimo.getItem().setStatus(StatusLivro.DISPONIVEL);
         emprestimo.setDataDevolucaoPrevista(hoje);
     }
+         public List<ItemDoAcervo> buscar(String termo){
+        	 List<ItemDoAcervo> listaResultados = new ArrayList<>();
+        	 String termoLowerCase = termo.toLowerCase();
+        	 for (ItemDoAcervo item : this.acervo) {
+        	        
+        	        if (item.getTitulo().toLowerCase().contains(termoLowerCase)) {
+        	            listaResultados.add(item);
+        	        }
+        	        else if (item instanceof Livro) {
+        	            Livro livro = (Livro) item;
+        	            if (livro.getAutor().toLowerCase().contains(termoLowerCase)) {
+        	                listaResultados.add(item);
+        	            }
+        	        }
+        	    }
+        	    return listaResultados;}
 
     public static void main(String[] args) {
         Livro livroJavaComoProgramar = new Livro("Java Como Programar", "Deitel", 2014);
@@ -147,7 +164,24 @@ public class Biblioteca{
         Revista revistaveja = new Revista("veja",2024 ,1 );
         System.out.println(revistaveja);
         System.out.println(livroJavaComoProgramar);
-
-
-    }
-}
+        DVD dvdReiLeao = new DVD("O Rei Leão", 1994, 89);
+        minhaBiblioteca.cadastrarItem(dvdReiLeao);
+        minhaBiblioteca.listarAcervo();
+        minhaBiblioteca.realizarEmprestimo(meuUsuario.getUser(), dvdReiLeao.getTitulo());
+        minhaBiblioteca.realizarDevolucao("o Rei Leão");
+        minhaBiblioteca.listarAcervo();
+        ItemDoAcervo ItemGenerico = new ItemDoAcervo("Titulo Generico", 2025);
+        Livro livro1 = new Livro("A Batalha do Apocalipse", "Eduardo Spohr", 2007);
+        Livro livro2 = new Livro("O Fim da Infância", "Arthur C. Clarke", 1953);
+        Revista revista1 = new Revista("National Geographic", 2023, 150);
+        minhaBiblioteca.cadastrarItem(livro1);
+        minhaBiblioteca.cadastrarItem(livro2);
+        minhaBiblioteca.cadastrarItem(revista1);
+        List<ItemDoAcervo> resultadosPorAutor = minhaBiblioteca.buscar("Spohr");
+        
+        
+        for(ItemDoAcervo item : resultadosPorAutor) {
+        	System.out.println(item);
+        }
+       
+};}

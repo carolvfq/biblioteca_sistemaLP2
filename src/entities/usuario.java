@@ -71,4 +71,9 @@ public class Usuario {
     public int hashCode() {
         return Objects.hashCode(user);
     }
+
+	public String getuser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
